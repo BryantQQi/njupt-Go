@@ -1,0 +1,89 @@
+package com.atnjupt.sqyxgo.user.Service.impl;
+
+import com.atnjupt.sqyxgo.enums.UserType;
+import com.atnjupt.sqyxgo.model.user.Leader;
+import com.atnjupt.sqyxgo.model.user.User;
+import com.atnjupt.sqyxgo.model.user.UserDelivery;
+import com.atnjupt.sqyxgo.user.Service.UserDeliveryService;
+import com.atnjupt.sqyxgo.user.Service.UserService;
+import com.atnjupt.sqyxgo.user.mapper.LeaderMapper;
+import com.atnjupt.sqyxgo.user.mapper.UserDeliveryMapper;
+import com.atnjupt.sqyxgo.user.mapper.UserMapper;
+import com.atnjupt.sqyxgo.vo.user.LeaderAddressVo;
+import com.atnjupt.sqyxgo.vo.user.UserLoginVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+/**
+ * ClassName:UserServiceImpl
+ * Package: com.atnjupt.sqyxgo.user.Service.impl
+ * Description:
+ *
+ * @Author Monkey
+ * @Create 2025/7/24 11:38
+ * @Version 1.0
+ */
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    private final UserDeliveryMapper userDeliveryMapper;
+    private final LeaderMapper leaderMapper;
+
+
+    ////判断是否是第一次使用微信授权登录：如何判断？openId
+    @Override
+    public User getUserByOpenId(String openid) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getOpenId,openid);
+        User user = baseMapper.selectOne(lambdaQueryWrapper);
+        return user;
+    }
+
+    ///5.1 通过userId拿到Leader信息，封装到LeaderAddressVo里面
+    @Override
+    public LeaderAddressVo getLeaderAddressVoByUserId(Long userId) {
+        LeaderAddressVo leaderAddressVo = new LeaderAddressVo();
+        //1 获取用户对应的团长的团长id,对应团长表中的自增id
+        UserDelivery userDelivery = userDeliveryMapper.selectOne(
+                new LambdaQueryWrapper<UserDelivery>().eq(UserDelivery::getUserId, userId)
+                        .eq(UserDelivery::getIsDefault,1)
+        );
+        if (userDelivery == null){
+            return null;
+        }
+        //根据团长id去查团长表
+        Leader leader = leaderMapper.selectById(userDelivery.getLeaderId());
+        //拷贝信息
+        BeanUtils.copyProperties(leader,leaderAddressVo);
+
+        return leaderAddressVo;
+    }
+    //7 获取当前登录用户信息封装到UserLoginVo，放到Redis里面，设置有效时间
+    @Override
+    public UserLoginVo getUserLoginVo(Long userId) {
+        User user = baseMapper.selectById(userId);
+        UserDelivery userDelivery = userDeliveryMapper.selectOne(
+                new LambdaQueryWrapper<UserDelivery>().eq(UserDelivery::getUserId, userId)
+                        .eq(UserDelivery::getIsDefault,1)
+        );
+        UserLoginVo userLoginVo = new UserLoginVo();
+        BeanUtils.copyProperties(user,userLoginVo);
+
+        //如果是团长，则获取团长对应的仓库id
+        if(user.getUserType() == UserType.LEADER){
+            LambdaQueryWrapper<Leader> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Leader::getUserId,userId);
+            Leader leader = leaderMapper.selectOne(wrapper);
+            userLoginVo.setLeaderId(leader.getId());
+            userLoginVo.setWareId(userDelivery.getWareId());
+        }else { //如果是会员，则获取会员对应的仓库id
+            userLoginVo.setLeaderId(userDelivery.getLeaderId());
+            userLoginVo.setWareId(userDelivery.getWareId());
+        }
+        return userLoginVo;
+    }
+}

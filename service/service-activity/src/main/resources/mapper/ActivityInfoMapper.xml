@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atnjupt.sqyxgo.activity.mapper.ActivityInfoMapper">
+
+<!--    ////查询两张表判断activity_info和activity_sku，判断skuId是否参加过活动，如果参加过，并且在进行中，则在集合中剔除这个skuId，因为-->
+<!--    ////每一个商品只参加一个活动。-->
+    <select id="selectSkuIdListExist" resultType="Long">
+        SELECT sku.sku_id
+        FROM activity_info info
+        INNER JOIN activity_sku sku
+        ON info.id = sku.activity_id
+        <where>
+            <if test="skuIdList != null and skuIdList.size > 0">
+                sku.sku_id IN
+                <foreach collection="skuIdList" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                AND
+            </if>
+            NOW() BETWEEN info.start_time AND end_time
+        </where>
+    </select>
+
+
+
+
+</mapper>
