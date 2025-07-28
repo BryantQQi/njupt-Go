@@ -65,6 +65,7 @@ public class SkuServiceImpl implements SkuService {
             //TODO 待完善-秒杀商品
 
         }
+        log.info("upperSku：保存前");
         //保存到es(落库到es)
         SkuEs save = skuRepository.save(skuEs);
         log.info("upperSku："+ JSON.toJSONString(save));
@@ -73,7 +74,7 @@ public class SkuServiceImpl implements SkuService {
     //下架商品
     @Override
     public void downSkuInfoById(Long skuId) {
-        skuRepository.deleteById(skuId);
+        //skuRepository.deleteById(skuId);
     }
 
 
