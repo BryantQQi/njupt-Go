@@ -36,4 +36,8 @@ public interface SkuInfoService extends IService<SkuInfo> {
     SkuInfo getSkuInfoByIdToElasticsearch(Long skuId);
     //activity：通过关键字获得skuInfo集合
     List<SkuInfo> findSkuInfoByKeyword(String keyword);
+    //获取新人专享
+    List<SkuInfo> findNewPersonSkuInfoList();
+    // 通过skuId 查询skuInfoVo
+    SkuInfoVo getSkuInfoVo(Long skuId);
 }

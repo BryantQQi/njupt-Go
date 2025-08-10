@@ -23,4 +23,6 @@ public interface CategoryService extends IService<Category> {
     Category getCategoryToElasticseacrch(Long categoryId);
     //给一个categoryIdList，返回一个categoryList集合
     List<Category> findCategoryListByCategoryIdList(List<Long> categoryIdList);
+    //获取分类信息
+    List<Category> findAllList();
 }

@@ -22,6 +22,11 @@
     </select>
 
 
+    <!--//通过skuId查询到activityRule-->
+
+
+
+
 
 
 </mapper>

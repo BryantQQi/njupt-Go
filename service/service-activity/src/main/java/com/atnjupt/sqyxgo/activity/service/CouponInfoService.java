@@ -28,4 +28,6 @@ public interface CouponInfoService extends IService<CouponInfo> {
     void saveCouponRule(CouponRuleVo couponRuleVo);
     //根据关键字获取sku列表，活动使用，就是把商品添加到这个优惠卷面下，表示此商品可以使用这个优惠卷，前端展示的添加活动范围按钮
     List<CouponInfo> findCouponByKeyword(String keyword);
+    //获取优惠券信息
+    List<CouponInfo> findCouponInfo(Long skuId, Long userId);
 }

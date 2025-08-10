@@ -2,6 +2,7 @@ package com.atnjupt.sqyxgo.activity.service.impl;
 
 import com.atnjupt.sqyxgo.activity.mapper.CouponRangeMapper;
 import com.atnjupt.sqyxgo.client.product.ProductFeignClient;
+import com.atnjupt.sqyxgo.common.security.AuthContextHolder;
 import com.atnjupt.sqyxgo.enums.CouponRangeType;
 import com.atnjupt.sqyxgo.model.activity.CouponInfo;
 import com.atnjupt.sqyxgo.activity.mapper.CouponInfoMapper;
@@ -16,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -32,11 +34,13 @@ import java.util.stream.Collectors;
  * @since 2025-07-21
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponInfo> implements CouponInfoService {
 
     private final CouponRangeMapper couponRangeMapper;
     private final ProductFeignClient productFeignClient;
+    private final CouponInfoMapper couponInfoMapper;
 
     //优惠卷信息分页查询
     @Override
@@ -45,6 +49,7 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
         couponInfoPage1.getRecords().stream().forEach(item -> {
             item.setCouponTypeString(item.getCouponType().getComment());
         });
+        log.info("userName={}",AuthContextHolder.getUserLoginVoThreadLocal().getNickName());
         couponInfoPage1.getRecords().stream().forEach(item -> {
             item.setRangeTypeString(item.getRangeType().getComment());
         });
@@ -130,5 +135,15 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
         LambdaQueryWrapper<CouponInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(CouponInfo::getCouponName,keyword);
         return baseMapper.selectList(wrapper);
+    }
+
+
+    //通过skuId,categoryId,userId获取优惠券信息
+    @Override
+    public List<CouponInfo> findCouponInfo(Long skuId, Long userId) {
+        SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
+        Long categoryId = skuInfo.getCategoryId();
+        List<CouponInfo> couponInfoList = couponInfoMapper.findCouponInfo(skuId,categoryId,userId);
+        return  couponInfoList;
     }
 }

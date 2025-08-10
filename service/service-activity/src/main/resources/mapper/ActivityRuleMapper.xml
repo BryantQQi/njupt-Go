@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atnjupt.sqyxgo.activity.mapper.ActivityRuleMapper">
 
+<!--    一个sku只能有一个促销活动，一个活动有多个活动规则（如满赠，满100送10，满500送50）-->
+
+
+
 </mapper>

@@ -2,6 +2,7 @@ package com.atnjupt.sqyxgo.activity.service.impl;
 
 import com.atnjupt.sqyxgo.activity.mapper.ActivityRuleMapper;
 import com.atnjupt.sqyxgo.activity.mapper.ActivitySkuMapper;
+import com.atnjupt.sqyxgo.activity.service.CouponInfoService;
 import com.atnjupt.sqyxgo.client.product.ProductFeignClient;
 import com.atnjupt.sqyxgo.enums.ActivityType;
 import com.atnjupt.sqyxgo.model.activity.ActivityInfo;
@@ -9,6 +10,7 @@ import com.atnjupt.sqyxgo.activity.mapper.ActivityInfoMapper;
 import com.atnjupt.sqyxgo.activity.service.ActivityInfoService;
 import com.atnjupt.sqyxgo.model.activity.ActivityRule;
 import com.atnjupt.sqyxgo.model.activity.ActivitySku;
+import com.atnjupt.sqyxgo.model.activity.CouponInfo;
 import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.model.sys.Ware;
 import com.atnjupt.sqyxgo.vo.activity.ActivityRuleVo;
@@ -21,10 +23,13 @@ import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,6 +49,7 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     private final ActivityRuleMapper activityRuleMapper;
     private final ActivitySkuMapper activitySkuMapper;
     private final ProductFeignClient productFeignClient;
+    private final CouponInfoService couponInfoService;
 
     //分页查询营销活动
     @Override
@@ -148,4 +154,63 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
                 filter(item -> !existSkuIdList.contains(item.getId())).collect(Collectors.toList());
         return collect;
     }
+
+
+    //获取skuId对应的促销活动标签
+    @Override
+    public Map<Long, List<String>> findActivity(List<Long> skuIdList) {
+        Map<Long, List<String>> map = new HashMap<>();
+        //通过skuId查询到activityRule
+        skuIdList.forEach(item ->{
+            List<ActivityRule> activityRuleList = baseMapper.findActivityRule(item);
+            if(!CollectionUtils.isEmpty(activityRuleList)){
+                List<String> ruleList = new ArrayList<>();
+                activityRuleList.forEach(item1 -> {
+                    ruleList.add(this.getRuleDesc(item1));
+                });
+                map.put(item,ruleList);
+            }
+        });
+
+        return map;
+    }
+
+    //sku对应的促销与优惠券信息
+    @Override
+    public Map<String, Object> findActivityAndCoupon(Long skuId, Long userId) {
+        //一个sku只能有一个促销活动，一个活动有多个活动规则（如满赠，满100送10，满500送50）
+        List<ActivityRule> activityRuleList = activityRuleMapper.findActivityRule(skuId);
+
+        //获取优惠券信息
+        List<CouponInfo> couponInfoList = couponInfoService.findCouponInfo(skuId, userId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityRuleList", activityRuleList);
+        map.put("couponInfoList", couponInfoList);
+        return map;
+
+    }
+
+
+    //构造规则名称的方法
+    private String getRuleDesc(ActivityRule activityRule) {
+        //通过不同活动类型来进行活动名字拼接
+        ActivityType activityType = activityRule.getActivityType();
+        StringBuffer ruleDesc = new StringBuffer();
+        if(activityType == ActivityType.FULL_REDUCTION){//满多少元减多少元
+            ruleDesc.append("满")
+                    .append(activityRule.getConditionAmount())
+                    .append("元减")
+                    .append(activityRule.getBenefitAmount())
+                    .append("元");
+        }else {//满量打折
+            ruleDesc.append("满")
+                    .append(activityRule.getConditionNum())
+                    .append("元打")
+                    .append(activityRule.getBenefitDiscount())
+                    .append("折");
+        }
+        return ruleDesc.toString();
+    }
+
 }

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-public class UserInnerController {
+public class LeaderInnerController {
 
     private final LeaderService leaderService;
 

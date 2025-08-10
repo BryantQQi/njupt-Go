@@ -5,6 +5,7 @@ import com.atnjupt.sqyxgo.model.product.Category;
 import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.product.service.CategoryService;
 import com.atnjupt.sqyxgo.product.service.SkuInfoService;
+import com.atnjupt.sqyxgo.vo.product.SkuInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -73,4 +74,27 @@ public class ProductInnerController {
         }
         return categoryList;
     }
+
+    //获取新人专享
+    @GetMapping("inner/findNewPersonSkuInfoList")
+    public List<SkuInfo> findNewPersonSkuInfoList(){
+        List<SkuInfo> newPersonSkuInfoList = skuInfoService.findNewPersonSkuInfoList();
+        return newPersonSkuInfoList;
+    }
+    //获取分类信息
+    @GetMapping("inner/findAllCategoryList")
+    public List<Category> findAllCategoryList(){
+        return categoryService.findAllList();
+    }
+
+    // 通过skuId 查询skuInfoVo
+    @GetMapping("inner/getSkuInfoVo/{skuId}")
+    public SkuInfoVo getSkuInfoVo(@PathVariable(value = "skuId") Long skuId){
+        SkuInfoVo skuInfoVo = skuInfoService.getSkuInfoVo(skuId);
+        return skuInfoVo;
+    }
+
+
+
+
 }

@@ -30,4 +30,8 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
     void saveActivityRule(ActivityRuleVo activityRuleVo);
     //通过关键字查询商品信息
     List<SkuInfo> findSkuInfoByKeyword(String keyword);
+    //获取skuId对应的促销活动标签
+    Map<Long, List<String>> findActivity(List<Long> skuIdList);
+    //sku对应的促销与优惠券信息
+    Map<String, Object> findActivityAndCoupon(Long skuId, Long userId);
 }

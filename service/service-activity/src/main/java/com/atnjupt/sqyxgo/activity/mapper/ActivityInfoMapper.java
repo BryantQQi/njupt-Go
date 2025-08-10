@@ -2,6 +2,7 @@ package com.atnjupt.sqyxgo.activity.mapper;
 
 
 import com.atnjupt.sqyxgo.model.activity.ActivityInfo;
+import com.atnjupt.sqyxgo.model.activity.ActivityRule;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import feign.Param;
 
@@ -21,5 +22,6 @@ public interface ActivityInfoMapper extends BaseMapper<ActivityInfo> {
     List<Long> selectSkuIdListExist(@Param("skuIdList") List<Long> skuIdList);
 
 
-
+    //通过skuId查询到activityRule
+    List<ActivityRule> findActivityRule(Long item);
 }

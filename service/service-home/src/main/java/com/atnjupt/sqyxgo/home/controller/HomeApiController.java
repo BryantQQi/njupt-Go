@@ -32,17 +32,13 @@ public class HomeApiController {
 
     //获取首页数据
     @ApiOperation("获取首页数据")
-    @GetMapping("index")
+    @GetMapping("index/{userId}")
     public Result index(HttpRequestHandler request){
         Long userId = AuthContextHolder.getUserIdThreadLocal();
 
         Map<String,Object> map = homeService.getHomeData(userId);
 
-        return Result.ok(null);
+        return Result.ok(map);
     }
 
-    //获取分类
-
-
-    //商品详情
 }

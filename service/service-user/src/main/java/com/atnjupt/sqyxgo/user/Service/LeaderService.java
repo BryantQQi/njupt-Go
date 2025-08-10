@@ -1,6 +1,7 @@
 package com.atnjupt.sqyxgo.user.Service;
 
 import com.atnjupt.sqyxgo.model.user.Leader;
+import com.atnjupt.sqyxgo.vo.user.LeaderAddressVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Version 1.0
  */
 public interface LeaderService extends IService<Leader> {
+    //通过userId获得当前登录用户的提货点地址信息
+    LeaderAddressVo getLeaderAddressVoByUserId(Long userId);
 }

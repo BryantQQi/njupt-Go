@@ -4,6 +4,7 @@ import com.atnjupt.sqyxgo.model.product.*;
 import com.atnjupt.sqyxgo.model.product.SkuImage;
 import com.atnjupt.sqyxgo.mq.constant.MQConst;
 import com.atnjupt.sqyxgo.mq.service.RabbitService;
+import com.atnjupt.sqyxgo.product.mapper.SkuAttrValueMapper;
 import com.atnjupt.sqyxgo.product.mapper.SkuInfoMapper;
 import com.atnjupt.sqyxgo.product.service.*;
 import com.atnjupt.sqyxgo.vo.product.SkuInfoQueryVo;
@@ -39,6 +40,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
     private final SkuPosterService skuPosterService;
     private final SkuImageService skuImageService;
     private final RabbitService rabbitService;
+    private final SkuAttrValueMapper skuAttrValueMapper;
+    private final SkuInfoMapper skuInfoMapper;
 
 
     //分页查询商品信息
@@ -223,5 +226,31 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         skuInfoLambdaQueryWrapper.like(SkuInfo::getSkuName,keyword);
         List<SkuInfo> skuInfoList = baseMapper.selectList(skuInfoLambdaQueryWrapper);
         return skuInfoList;
+    }
+    //获取新人专享
+    @Override
+    public List<SkuInfo> findNewPersonSkuInfoList() {
+        LambdaQueryWrapper<SkuInfo> skuInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        skuInfoLambdaQueryWrapper.eq(SkuInfo::getIsNewPerson,1);
+        List<SkuInfo> isNewPersonSkuInfoList = baseMapper.selectList(skuInfoLambdaQueryWrapper);
+        return isNewPersonSkuInfoList;
+    }
+
+
+    // 通过skuId 查询skuInfoVo
+    @Override
+    public SkuInfoVo getSkuInfoVo(Long skuId) {
+
+        SkuInfoVo skuInfoVo = new SkuInfoVo();
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        List<SkuImage> skuImageList = skuImageService.getSkuImageById(skuId);
+        List<SkuPoster> skuPosterList = skuPosterService.getSkuPosterById(skuId);
+        List<SkuAttrValue> skuAttrValueList = skuAttrValueService.getSkuAttrById(skuId);
+
+        BeanUtils.copyProperties(skuInfo, skuInfoVo);
+        skuInfoVo.setSkuImagesList(skuImageList);
+        skuInfoVo.setSkuPosterList(skuPosterList);
+        skuInfoVo.setSkuAttrValueList(skuAttrValueList);
+        return skuInfoVo;
     }
 }

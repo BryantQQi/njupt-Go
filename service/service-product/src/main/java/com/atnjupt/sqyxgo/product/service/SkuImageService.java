@@ -16,4 +16,5 @@ import java.util.List;
 public interface SkuImageService extends IService<SkuImage> {
     //通过skuId查商品的图片信息
     List<SkuImage> getSkuImageById(Long id);
+
 }
