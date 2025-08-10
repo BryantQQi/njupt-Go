@@ -1,7 +1,8 @@
 package com.atnjupt.sqyxgo.home.service.impl;
 
-import com.atnjupt.sqyxgo.home.service.HomeService;
-import com.sun.xml.internal.bind.v2.TODO;
+import com.atnjupt.sqyxgo.client.product.ProductFeignClient;
+import com.atnjupt.sqyxgo.home.service.HomeApiService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,14 +17,16 @@ import java.util.Map;
  * @Version 1.0
  */
 @Service
-public class HomeServiceImpl implements HomeService {
+@RequiredArgsConstructor
+public class HomeApiServiceImpl implements HomeApiService {
 
+    private final ProductFeignClient productFeignClient;
     //获取首页数据
     @Override
     public Map<String, Object> getHomeData(Long userId) {
         //当前登录用户的提货点地址信息
         //远程调用service-product接口
-
+        productFeignClient.
         //新人专享商品
         //远程调用service-product接口
 
