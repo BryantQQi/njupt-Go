@@ -6,6 +6,7 @@ import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.product.service.CategoryService;
 import com.atnjupt.sqyxgo.product.service.SkuInfoService;
 import com.atnjupt.sqyxgo.vo.product.SkuInfoVo;
+import com.atnjupt.sqyxgo.vo.product.SkuStockLockVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -93,6 +94,13 @@ public class ProductInnerController {
         SkuInfoVo skuInfoVo = skuInfoService.getSkuInfoVo(skuId);
         return skuInfoVo;
     }
+    //锁定库存
+    @ApiOperation(value = "锁定库存")
+    @PostMapping("inner/checkAndLock/{orderNo}")
+    public Boolean checkAndLock(@RequestBody List<SkuStockLockVo> skuStockLockVoList, @PathVariable String orderNo) {
+        return skuInfoService.checkAndLock(skuStockLockVoList, orderNo);
+    }
+
 
 
 

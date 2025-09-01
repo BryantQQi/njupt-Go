@@ -1,12 +1,12 @@
-package com.atguigu.ssyx.order.controller;
+package com.atnjupt.sqyxgo.order.controller;
 
-import com.atguigu.ssyx.common.auth.AuthContextHolder;
-import com.atguigu.ssyx.common.result.Result;
-import com.atguigu.ssyx.model.order.OrderInfo;
-import com.atguigu.ssyx.order.service.OrderInfoService;
-import com.atguigu.ssyx.vo.order.OrderConfirmVo;
-import com.atguigu.ssyx.vo.order.OrderSubmitVo;
-import com.atguigu.ssyx.vo.order.OrderUserQueryVo;
+import com.atnjupt.sqyxgo.common.security.AuthContextHolder;
+import com.atnjupt.sqyxgo.common.result.Result;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.order.service.OrderInfoService;
+import com.atnjupt.sqyxgo.vo.order.OrderConfirmVo;
+import com.atnjupt.sqyxgo.vo.order.OrderSubmitVo;
+import com.atnjupt.sqyxgo.vo.order.OrderUserQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 
 @Api(value = "Order管理", tags = "Order管理")
@@ -36,7 +37,7 @@ public class OrderApiController {
 	@PostMapping("auth/submitOrder")
 	public Result submitOrder(@RequestBody OrderSubmitVo orderParamVo, HttpServletRequest request) {
 		// 获取到用户Id
-		Long userId = AuthContextHolder.getUserId();
+		Long userId = AuthContextHolder.getUserIdThreadLocal();
 		Long orderId = orderService.submitOrder(orderParamVo);
 		return Result.ok(orderId);
 	}
@@ -69,7 +70,7 @@ public class OrderApiController {
 
 			@ApiParam(name = "orderVo", value = "查询对象", required = false)
 			OrderUserQueryVo orderUserQueryVo) {
-		Long userId = AuthContextHolder.getUserId();
+		Long userId = AuthContextHolder.getUserIdThreadLocal();
 		orderUserQueryVo.setUserId(userId);
 		Page<OrderInfo> pageParam = new Page<>(page, limit);
 		IPage<OrderInfo> pageModel = orderService.findUserOrderPage(pageParam, orderUserQueryVo);

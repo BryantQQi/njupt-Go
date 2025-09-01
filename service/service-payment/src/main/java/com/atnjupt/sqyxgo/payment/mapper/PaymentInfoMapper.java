@@ -1,7 +1,7 @@
-package com.atguigu.ssyx.payment.mapper;
+package com.atnjupt.sqyxgo.payment.mapper;
 
 
-import com.atguigu.ssyx.model.order.PaymentInfo;
+import com.atnjupt.sqyxgo.model.order.PaymentInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

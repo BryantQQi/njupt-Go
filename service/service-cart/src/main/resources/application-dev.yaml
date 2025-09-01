@@ -11,7 +11,12 @@ feign:
 spring:
   main:
     allow-bean-definition-overriding: true #当遇到同样名字的时候，是否允许覆盖注册
-
+  rabbitmq:
+    host: 121.4.64.60
+    port: 5672
+    username: ssyx
+    password: wmq123456
+    virtual-host: /ssyx
   redis:
     host: 121.4.64.60
     port: 6379

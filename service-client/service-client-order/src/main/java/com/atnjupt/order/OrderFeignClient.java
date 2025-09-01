@@ -1,6 +1,6 @@
-package com.atguigu.ssyx.client.order;
+package com.atnjupt.order;
 
-import com.atguigu.ssyx.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

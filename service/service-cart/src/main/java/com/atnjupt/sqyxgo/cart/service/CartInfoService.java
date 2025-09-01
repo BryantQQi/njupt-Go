@@ -1,6 +1,6 @@
-package com.atguigu.ssyx.cart.service;
+package com.atnjupt.sqyxgo.cart.service;
 
-import com.atguigu.ssyx.model.order.CartInfo;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
 
 import java.util.List;
 

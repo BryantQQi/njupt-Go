@@ -3,6 +3,8 @@ package com.atnjupt.sqyxgo.client.product;
 import com.atnjupt.sqyxgo.model.product.Category;
 import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.vo.product.SkuInfoVo;
+import com.atnjupt.sqyxgo.vo.product.SkuStockLockVo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,4 +51,8 @@ public interface ProductFeignClient {
     // 通过skuId 查询skuInfoVo
     @GetMapping("/api/product/inner/getSkuInfoVo/{skuId}")
     SkuInfoVo getSkuInfoVo(@PathVariable(value = "skuId") Long skuId);
+    //进行锁定
+    @ApiOperation(value = "锁定库存")
+    @PostMapping("api/product/inner/checkAndLock/{orderNo}")
+    public Boolean checkAndLock(@RequestBody List<SkuStockLockVo> skuStockLockVoList, @PathVariable String orderNo);
 }

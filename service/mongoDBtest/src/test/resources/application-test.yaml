@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: mongoDBtest
+  data:
+    mongodb:
+      # 将被 DynamicPropertySource 覆盖
+      uri: mongodb://localhost:27017/test
+
+

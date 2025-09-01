@@ -1,7 +1,7 @@
-package com.atguigu.ssyx.order.mapper;
+package com.atnjupt.sqyxgo.order.mapper;
 
 
-import com.atguigu.ssyx.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

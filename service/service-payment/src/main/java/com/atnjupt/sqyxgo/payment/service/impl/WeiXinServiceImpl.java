@@ -1,24 +1,20 @@
-package com.atguigu.ssyx.payment.service.impl;
+package com.atnjupt.sqyxgo.payment.service.impl;
 
-import com.atguigu.ssyx.model.order.PaymentInfo;
-import com.atguigu.ssyx.payment.mapper.PaymentInfoMapper;
-import com.atguigu.ssyx.payment.service.PaymentInfoService;
-import com.atguigu.ssyx.payment.service.WeiXinService;
-import com.atguigu.ssyx.payment.utils.ConstantPropertiesUtils;
-import com.atguigu.ssyx.payment.utils.HttpClient;
-import com.atguigu.ssyx.vo.user.UserLoginVo;
+import com.atnjupt.sqyxgo.model.order.PaymentInfo;
+import com.atnjupt.sqyxgo.payment.mapper.PaymentInfoMapper;
+import com.atnjupt.sqyxgo.payment.service.PaymentInfoService;
+import com.atnjupt.sqyxgo.payment.service.WeiXinService;
+import com.atnjupt.sqyxgo.payment.utils.ConstantPropertiesUtils;
+import com.atnjupt.sqyxgo.payment.utils.HttpClient;
+import com.atnjupt.sqyxgo.vo.user.UserLoginVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.github.wxpay.sdk.WXPayUtil;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

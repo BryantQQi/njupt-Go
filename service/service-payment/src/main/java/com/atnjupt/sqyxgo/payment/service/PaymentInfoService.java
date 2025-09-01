@@ -1,8 +1,8 @@
-package com.atguigu.ssyx.payment.service;
+package com.atnjupt.sqyxgo.payment.service;
 
 
-import com.atguigu.ssyx.enums.PaymentType;
-import com.atguigu.ssyx.model.order.PaymentInfo;
+import com.atnjupt.sqyxgo.enums.PaymentType;
+import com.atnjupt.sqyxgo.model.order.PaymentInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Map;

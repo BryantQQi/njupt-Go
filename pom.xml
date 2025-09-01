@@ -39,6 +39,7 @@
         <jodatime.version>2.10.1</jodatime.version>
         <xxl-job.version>2.3.0</xxl-job.version>
         <spring-data-elasticsearch.version>4.2.4</spring-data-elasticsearch.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
 
     </properties>
 

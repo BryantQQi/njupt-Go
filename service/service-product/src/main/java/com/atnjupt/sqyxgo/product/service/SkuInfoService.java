@@ -3,6 +3,7 @@ package com.atnjupt.sqyxgo.product.service;
 import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.vo.product.SkuInfoQueryVo;
 import com.atnjupt.sqyxgo.vo.product.SkuInfoVo;
+import com.atnjupt.sqyxgo.vo.product.SkuStockLockVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -40,4 +41,6 @@ public interface SkuInfoService extends IService<SkuInfo> {
     List<SkuInfo> findNewPersonSkuInfoList();
     // 通过skuId 查询skuInfoVo
     SkuInfoVo getSkuInfoVo(Long skuId);
+    //锁定库存
+    Boolean checkAndLock(List<SkuStockLockVo> skuStockLockVoList, String orderNo);
 }

@@ -1,17 +1,18 @@
-package com.atguigu.ssyx.payment.service.impl;
+package com.atnjupt.sqyxgo.payment.service.impl;
 
 
-import com.atguigu.ssyx.client.order.OrderFeignClient;
-import com.atguigu.ssyx.common.exception.SsyxException;
-import com.atguigu.ssyx.common.result.ResultCodeEnum;
-import com.atguigu.ssyx.enums.PaymentStatus;
-import com.atguigu.ssyx.enums.PaymentType;
-import com.atguigu.ssyx.model.order.OrderInfo;
-import com.atguigu.ssyx.model.order.PaymentInfo;
-import com.atguigu.ssyx.mq.constant.MqConst;
-import com.atguigu.ssyx.mq.service.RabbitService;
-import com.atguigu.ssyx.payment.service.PaymentInfoService;
-import com.atguigu.ssyx.payment.mapper.PaymentInfoMapper;
+
+import com.atnjupt.order.OrderFeignClient;
+import com.atnjupt.sqyxgo.common.exception.SqyxgoException;
+import com.atnjupt.sqyxgo.common.result.ResultCodeEnum;
+import com.atnjupt.sqyxgo.enums.PaymentStatus;
+import com.atnjupt.sqyxgo.enums.PaymentType;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.model.order.PaymentInfo;
+import com.atnjupt.sqyxgo.mq.constant.MQConst;
+import com.atnjupt.sqyxgo.mq.service.RabbitService;
+import com.atnjupt.sqyxgo.payment.mapper.PaymentInfoMapper;
+import com.atnjupt.sqyxgo.payment.service.PaymentInfoService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
         //远程调用order模块，更加order唯一标识获得orderInfo
         OrderInfo order = orderFeignClient.getOrderInfoById(orderNo);
         if(order == null){
-            throw new SsyxException(ResultCodeEnum.DATA_ERROR);
+            throw new SqyxgoException(ResultCodeEnum.DATA_ERROR);
         }
 
         PaymentInfo paymentInfo = new PaymentInfo();
@@ -82,7 +83,7 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
         paymentInfoMapper.updateById(paymentInfo);
 
         //减库存和修改订单支付状态
-        rabbitService.sendMessage(MqConst.EXCHANGE_PAY_DIRECT,MqConst.ROUTING_PAY_SUCCESS,orderNo);
+        rabbitService.sendMessage(MQConst.EXCHANGE_PAY_DIRECT,MQConst.ROUTING_PAY_SUCCESS,orderNo);
     }
 }
 

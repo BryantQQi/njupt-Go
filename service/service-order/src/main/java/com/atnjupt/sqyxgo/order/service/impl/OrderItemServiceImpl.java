@@ -1,9 +1,9 @@
-package com.atguigu.ssyx.order.service.impl;
+package com.atnjupt.sqyxgo.order.service.impl;
 
 
-import com.atguigu.ssyx.model.order.OrderItem;
-import com.atguigu.ssyx.order.service.OrderItemService;
-import com.atguigu.ssyx.order.mapper.OrderItemMapper;
+import com.atnjupt.sqyxgo.model.order.OrderItem;
+import com.atnjupt.sqyxgo.order.mapper.OrderItemMapper;
+import com.atnjupt.sqyxgo.order.service.OrderItemService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

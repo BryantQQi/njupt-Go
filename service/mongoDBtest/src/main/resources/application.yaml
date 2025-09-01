@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: mongoDBtest
+
+  # 默认使用 dev（本地/测试容器），可切换为 remote 连接远程 Mongo
+  profiles:
+    active: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      # 对于 Testcontainers，测试代码会通过 DynamicPropertySource 注入 URI 覆盖此处
+      uri: mongodb://localhost:27017/test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: remote
+  data:
+    mongodb:
+      # 使用环境变量或在本地 application-remote.yaml 中配置
+      # 示例：mongodb://user:pass@host:27017/dbname?retryWrites=true&w=majority
+      uri: ${MONGODB_URI:mongodb://localhost:27017/test}
+
+

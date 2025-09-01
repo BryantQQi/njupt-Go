@@ -1,4 +1,4 @@
-package com.atguigu.ssyx.payment.service;
+package com.atnjupt.sqyxgo.payment.service;
 
 import java.util.Map;
 

@@ -1,7 +1,8 @@
-package com.atguigu.ssyx.order.reveiver;
+package com.atnjupt.sqyxgo.order.reveiver;
 
-import com.atguigu.ssyx.mq.constant.MqConst;
-import com.atguigu.ssyx.order.service.OrderInfoService;
+
+import com.atnjupt.sqyxgo.mq.constant.MQConst;
+import com.atnjupt.sqyxgo.order.service.OrderInfoService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
@@ -31,9 +32,9 @@ public class OrderReceiver {
      * 修改订单的支付状态，和删减库存
      */
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = MqConst.QUEUE_ORDER_PAY,durable = "true"),
-           exchange = @Exchange(value = MqConst.EXCHANGE_PAY_DIRECT),
-            key = {MqConst.ROUTING_PAY_SUCCESS}
+            value = @Queue(value = MQConst.QUEUE_ORDER_PAY,durable = "true"),
+           exchange = @Exchange(value = MQConst.EXCHANGE_PAY_DIRECT),
+            key = {MQConst.ROUTING_PAY_SUCCESS}
     ))
     public void updateOrderInfoStatus(String orderNo, Message message , Channel channel) throws IOException {
       if(!StringUtils.isEmpty(orderNo)){

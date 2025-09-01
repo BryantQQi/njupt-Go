@@ -20,4 +20,7 @@ public interface UserFeignClient {
     //当前登录用户的提货点地址信息
     @GetMapping("/api/user/inner/getLeaderAddressVoByUserId/{userId}")
     LeaderAddressVo getLeaderAddressVoByUserId(@PathVariable(value = "userId") Long userId);
+
+    @GetMapping("api/user/leader/inner/getUserAddressByUserId/{userId}")
+    public LeaderAddressVo getUserAddressByUserId(@PathVariable Long userId);
 }

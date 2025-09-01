@@ -1,4 +1,4 @@
-package com.atguigu.ssyx.common.utils;
+package com.atnjupt.sqyxgo.common.utils.helper;
 
 import org.apache.commons.lang.time.DateUtils;
 

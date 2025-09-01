@@ -1,32 +1,32 @@
-package com.atguigu.ssyx.order.service.impl;
+package com.atnjupt.sqyxgo.order.service.impl;
 
 
-import com.atguigu.ssyx.client.activity.ActivityFeignClient;
-import com.atguigu.ssyx.client.cart.CartFeignClient;
-import com.atguigu.ssyx.client.product.ProductFeignClient;
-import com.atguigu.ssyx.client.user.UserFeignClient;
-import com.atguigu.ssyx.common.auth.AuthContextHolder;
-import com.atguigu.ssyx.common.constant.RedisConst;
-import com.atguigu.ssyx.common.exception.SsyxException;
-import com.atguigu.ssyx.common.result.ResultCodeEnum;
-import com.atguigu.ssyx.common.utils.DateUtil;
-import com.atguigu.ssyx.enums.*;
-import com.atguigu.ssyx.model.activity.ActivityRule;
-import com.atguigu.ssyx.model.activity.CouponInfo;
-import com.atguigu.ssyx.model.order.CartInfo;
-import com.atguigu.ssyx.model.order.OrderInfo;
-import com.atguigu.ssyx.model.order.OrderItem;
-import com.atguigu.ssyx.mq.constant.MqConst;
-import com.atguigu.ssyx.mq.service.RabbitService;
-import com.atguigu.ssyx.order.mapper.OrderItemMapper;
-import com.atguigu.ssyx.order.service.OrderInfoService;
-import com.atguigu.ssyx.order.mapper.OrderInfoMapper;
-import com.atguigu.ssyx.vo.order.CartInfoVo;
-import com.atguigu.ssyx.vo.order.OrderConfirmVo;
-import com.atguigu.ssyx.vo.order.OrderSubmitVo;
-import com.atguigu.ssyx.vo.order.OrderUserQueryVo;
-import com.atguigu.ssyx.vo.product.SkuStockLockVo;
-import com.atguigu.ssyx.vo.user.LeaderAddressVo;
+import com.atnjupt.sqyxgo.client.activity.ActivityFeignClient;
+import com.atnjupt.sqyxgo.client.cart.CartFeignClient;
+import com.atnjupt.sqyxgo.client.product.ProductFeignClient;
+import com.atnjupt.sqyxgo.client.user.UserFeignClient;
+import com.atnjupt.sqyxgo.common.security.AuthContextHolder;
+import com.atnjupt.sqyxgo.common.constant.RedisConst;
+import com.atnjupt.sqyxgo.common.exception.SqyxgoException;
+import com.atnjupt.sqyxgo.common.result.ResultCodeEnum;
+import com.atnjupt.sqyxgo.common.utils.helper.DateUtil;
+import com.atnjupt.sqyxgo.enums.*;
+import com.atnjupt.sqyxgo.model.activity.ActivityRule;
+import com.atnjupt.sqyxgo.model.activity.CouponInfo;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.model.order.OrderItem;
+import com.atnjupt.sqyxgo.mq.constant.MQConst;
+import com.atnjupt.sqyxgo.mq.service.RabbitService;
+import com.atnjupt.sqyxgo.order.mapper.OrderInfoMapper;
+import com.atnjupt.sqyxgo.order.mapper.OrderItemMapper;
+import com.atnjupt.sqyxgo.order.service.OrderInfoService;
+import com.atnjupt.sqyxgo.vo.order.CartInfoVo;
+import com.atnjupt.sqyxgo.vo.order.OrderConfirmVo;
+import com.atnjupt.sqyxgo.vo.order.OrderSubmitVo;
+import com.atnjupt.sqyxgo.vo.order.OrderUserQueryVo;
+import com.atnjupt.sqyxgo.vo.product.SkuStockLockVo;
+import com.atnjupt.sqyxgo.vo.user.LeaderAddressVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -68,7 +68,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public OrderConfirmVo confirmOrder() {
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         //获取团长信息
         LeaderAddressVo leaderAddressVo = userFeignClient.getUserAddressByUserId(userId);
         //获取购物车中选中了的商品
@@ -91,18 +91,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Override
     public Long submitOrder(OrderSubmitVo orderSubmitVo) {
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         orderSubmitVo.setUserId(userId);
         // 1 订单不能重复提交，重复提交验证   lua脚本+redis实现
         String orderNo = orderSubmitVo.getOrderNo();
         if (StringUtils.isEmpty(orderNo)){
-            throw new SsyxException(ResultCodeEnum.ILLEGAL_REQUEST);
+            throw new SqyxgoException(ResultCodeEnum.ILLEGAL_REQUEST);
         }
         String script = "if(redis.call('get', KEYS[1]) == ARGV[1]) then return redis.call('del', KEYS[1]) else return 0 end";
         Boolean flag = (Boolean)redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class),
                 Arrays.asList(RedisConst.ORDER_REPEAT + orderNo), orderNo);
         if(!flag){
-            throw new SsyxException(ResultCodeEnum.REPEAT_SUBMIT);
+            throw new SqyxgoException(ResultCodeEnum.REPEAT_SUBMIT);
         }
         // 2 验证库存，并且锁定库存
         List<CartInfo> cartCheckedList = cartFeignClient.getCartCheckedList(userId);
@@ -121,12 +121,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         Boolean isLockSuccess = productFeignClient.checkAndLock(skuStockLockVoList, orderNo);
         if(!isLockSuccess){
              //锁定失败，抛出异常
-            throw new SsyxException(ResultCodeEnum.ORDER_STOCK_FALL);
+            throw new SqyxgoException(ResultCodeEnum.ORDER_STOCK_FALL);
         }
         // 3 保存订单，往表中添加数据
         Long orderId = this.saveOrder(orderSubmitVo,cartCheckedList);
         // 4 删除 购物车中被购买过的购物项
-        rabbitService.sendMessage(MqConst.EXCHANGE_ORDER_DIRECT,MqConst.ROUTING_DELETE_CART,orderSubmitVo.getUserId());
+        rabbitService.sendMessage(MQConst.EXCHANGE_ORDER_DIRECT,MQConst.ROUTING_DELETE_CART,orderSubmitVo.getUserId());
         return orderId;
     }
 
@@ -139,7 +139,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public OrderInfo getOrderInfoById(Long orderId) {
         OrderInfo orderInfo = baseMapper.selectById(orderId);
         if(orderInfo == null){
-            throw  new SsyxException(ResultCodeEnum.DATA_ERROR);
+            throw  new SqyxgoException(ResultCodeEnum.DATA_ERROR);
         }
         List<OrderItem> orderItems = orderItemMapper.selectList(new LambdaQueryWrapper<OrderItem>().eq(OrderItem::getOrderId, orderId));
         orderInfo.setOrderItemList(orderItems);
@@ -155,7 +155,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfoLambdaQueryWrapper.eq(OrderInfo::getOrderNo, orderNo);
         OrderInfo orderInfo = baseMapper.selectOne(orderInfoLambdaQueryWrapper);
         if(orderInfo == null || orderInfo.getOrderStatus() != OrderStatus.UNPAID){
-            throw  new SsyxException(ResultCodeEnum.DATA_ERROR);
+            throw  new SqyxgoException(ResultCodeEnum.DATA_ERROR);
         }
         orderInfo.setOrderStatus(OrderStatus.WAITING_DELEVER);
         baseMapper.insert(orderInfo);
@@ -165,7 +165,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<OrderItem> orderItems = orderItemMapper.selectList(orderItemLambdaQueryWrapper);
         Map<Long,Integer> skuIdToSkuNum = null;
         skuIdToSkuNum  = orderItems.stream().collect(Collectors.toMap(OrderItem::getSkuId, OrderItem::getSkuNum));
-        rabbitService.sendMessage(MqConst.EXCHANGE_ORDER_DIRECT,MqConst.ROUTING_PAY_SUCCESS,skuIdToSkuNum);
+        rabbitService.sendMessage(MQConst.EXCHANGE_ORDER_DIRECT,MQConst.ROUTING_PAY_SUCCESS,skuIdToSkuNum);
 
 
     }
@@ -180,7 +180,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public IPage<OrderInfo> findUserOrderPage(Page<OrderInfo> pageParam, OrderUserQueryVo orderUserQueryVo) {
         Long userId = orderUserQueryVo.getUserId();
         if(userId == null ){
-            throw  new SsyxException(ResultCodeEnum.LOGIN_AUTH);
+            throw  new SqyxgoException(ResultCodeEnum.LOGIN_AUTH);
         }
         OrderStatus orderStatus = orderUserQueryVo.getOrderStatus();
         LambdaQueryWrapper<OrderInfo> orderInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -209,13 +209,13 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     //要开启事务，这里多次进行insert操作
     @Transactional
     public Long saveOrder(OrderSubmitVo orderSubmitVo, List<CartInfo> cartCheckedList) {
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         if(cartCheckedList == null){
-            throw  new SsyxException(ResultCodeEnum.DATA_ERROR);
+            throw  new SqyxgoException(ResultCodeEnum.DATA_ERROR);
         }
         LeaderAddressVo leaderAddressVo = userFeignClient.getUserAddressByUserId(userId);
         if(null == leaderAddressVo) {
-            throw  new SsyxException(ResultCodeEnum.DATA_ERROR);
+            throw  new SqyxgoException(ResultCodeEnum.DATA_ERROR);
         }
 
 

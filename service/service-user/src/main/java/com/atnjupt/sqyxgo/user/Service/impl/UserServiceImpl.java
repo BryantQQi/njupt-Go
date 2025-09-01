@@ -32,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final UserDeliveryMapper userDeliveryMapper;
     private final LeaderMapper leaderMapper;
-
+    private final UserDeliveryService userDeliveryService;
 
     ////判断是否是第一次使用微信授权登录：如何判断？openId
     @Override
@@ -85,5 +85,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userLoginVo.setWareId(userDelivery.getWareId());
         }
         return userLoginVo;
+    }
+    //根据用户id查询提货点和团长信息
+    @Override
+    public LeaderAddressVo getLeaderAddressByUserId(Long userId) {
+        LambdaQueryWrapper<UserDelivery> userDeliveryLambdaQueryWrapper = new LambdaQueryWrapper<UserDelivery>().
+                eq(UserDelivery::getUserId, userId).eq(UserDelivery::getIsDefault, 1);
+        UserDelivery userDelivery = userDeliveryService.getOne(userDeliveryLambdaQueryWrapper);//这几行是根据 userId 和 is_default=1 这两个条件，从数据库表 user_delivery 查出这一条完整的 UserDelivery 对象，并赋值给 userDelivery。
+        if(userDelivery == null){
+            return null;
+        }
+        Leader leader = leaderMapper.selectById(userDelivery.getLeaderId());
+
+        LeaderAddressVo leaderAddressVo = new LeaderAddressVo();/*Vo（View Object）专门用来给前端的，实体类对应的是数据库中的表，但是表中的一些数据前端并不需要，所以出来了Vo类，把前端需要的数据封装到这个类中，传给前端，这是其一。其二就是前端需要一些数据，这些数据并不是数据库中某一个表能完全覆盖，这些数据可能一部分在A表一部分在B表，这样你传实体类也不行，只能写一个Vo类，把A表中需要的数据放进去，再把B表中需要的数据放进去，然后把这个Vo类转换成json传给前端*/
+        BeanUtils.copyProperties(leader, leaderAddressVo);
+        leaderAddressVo.setUserId(userId);
+        leaderAddressVo.setLeaderId(leader.getId());
+        leaderAddressVo.setLeaderName(leader.getName());
+        leaderAddressVo.setLeaderPhone(leader.getPhone());
+        leaderAddressVo.setWareId(userDelivery.getWareId());
+        leaderAddressVo.setStorePath(leader.getStorePath());
+        return leaderAddressVo;
+
     }
 }

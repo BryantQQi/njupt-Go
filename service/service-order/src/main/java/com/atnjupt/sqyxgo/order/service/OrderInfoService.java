@@ -1,10 +1,10 @@
-package com.atguigu.ssyx.order.service;
+package com.atnjupt.sqyxgo.order.service;
 
 
-import com.atguigu.ssyx.model.order.OrderInfo;
-import com.atguigu.ssyx.vo.order.OrderConfirmVo;
-import com.atguigu.ssyx.vo.order.OrderSubmitVo;
-import com.atguigu.ssyx.vo.order.OrderUserQueryVo;
+import com.atnjupt.sqyxgo.model.order.OrderInfo;
+import com.atnjupt.sqyxgo.vo.order.OrderConfirmVo;
+import com.atnjupt.sqyxgo.vo.order.OrderSubmitVo;
+import com.atnjupt.sqyxgo.vo.order.OrderUserQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;

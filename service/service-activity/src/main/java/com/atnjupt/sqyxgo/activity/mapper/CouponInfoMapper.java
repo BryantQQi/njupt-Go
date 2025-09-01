@@ -16,4 +16,6 @@ import java.util.List;
 public interface CouponInfoMapper extends BaseMapper<CouponInfo> {
     //通过skuId,categoryId,userId获取优惠券信息
     List<CouponInfo> findCouponInfo(Long skuId, Long categoryId, Long userId);
+
+    List<CouponInfo> findCouponInfoByUserId(Long userId);
 }

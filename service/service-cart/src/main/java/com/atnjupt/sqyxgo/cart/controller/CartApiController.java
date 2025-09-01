@@ -1,14 +1,15 @@
-package com.atguigu.ssyx.cart.controller;
+package com.atnjupt.sqyxgo.cart.controller;
 
-import com.atguigu.ssyx.cart.service.CartInfoService;
-import com.atguigu.ssyx.client.activity.ActivityFeignClient;
-import com.atguigu.ssyx.common.auth.AuthContextHolder;
-import com.atguigu.ssyx.common.result.Result;
-import com.atguigu.ssyx.model.order.CartInfo;
-import com.atguigu.ssyx.vo.order.OrderConfirmVo;
+
+import com.atnjupt.sqyxgo.cart.service.CartInfoService;
+import com.atnjupt.sqyxgo.common.result.Result;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
+import com.atnjupt.sqyxgo.common.security.AuthContextHolder;
+import com.atnjupt.sqyxgo.vo.order.OrderConfirmVo;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.atnjupt.sqyxgo.client.activity.ActivityFeignClient;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -41,7 +42,7 @@ public class CartApiController {
     public Result addToCart(@PathVariable("skuId") Long skuId,
                             @PathVariable("skuNum") Integer skuNum) {
         // 获取userId
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         cartInfoService.addToCart(skuId, userId, skuNum);
         return Result.ok(null);
     }
@@ -58,7 +59,7 @@ public class CartApiController {
     public Result deleteCart(@PathVariable("skuId") Long skuId,
                              HttpServletRequest request) {
         // 如何获取userId
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         cartInfoService.deleteCart(skuId, userId);
         return Result.ok(null);
     }
@@ -67,7 +68,7 @@ public class CartApiController {
     @DeleteMapping("deleteAllCart")
     public Result deleteAllCart(HttpServletRequest request){
         // 获取userId
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         cartInfoService.deleteAllCart(userId);
         return Result.ok(null);
     }
@@ -76,7 +77,7 @@ public class CartApiController {
     @PostMapping("batchDeleteCart")
     public Result batchDeleteCart(@RequestBody List<Long> skuIdList, HttpServletRequest request){
         // 取userId
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         cartInfoService.batchDeleteCart(skuIdList, userId);
         return Result.ok(null);
     }
@@ -94,7 +95,7 @@ public class CartApiController {
     @GetMapping("cartList")
     public Result cartList(HttpServletRequest request) {
         // 获取用户Id
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         List<CartInfo> cartInfoList = cartInfoService.getCartList(userId);
         return Result.ok(cartInfoList);
     }
@@ -108,7 +109,7 @@ public class CartApiController {
     @GetMapping("activityCartList")
     public Result activityCartList() {
         // 获取用户Id
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         List<CartInfo> cartInfoList = cartInfoService.getCartList(userId);
         OrderConfirmVo orderTradeVo = activityFeignClient.findCartActivityAndCoupon(cartInfoList, userId);
         return Result.ok(orderTradeVo);
@@ -125,7 +126,7 @@ public class CartApiController {
     public Result checkCart(@PathVariable(value = "skuId") Long skuId,
                             @PathVariable(value = "isChecked") Integer isChecked) {
         // 获取用户Id
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         // 调用更新方法
         cartInfoService.checkCart(userId, isChecked, skuId);
         return Result.ok(null);
@@ -139,7 +140,7 @@ public class CartApiController {
     @GetMapping("checkAllCart/{isChecked}")
     public Result checkAllCart(@PathVariable(value = "isChecked") Integer isChecked) {
         // 获取用户Id
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         // 调用更新方法
         cartInfoService.checkAllCart(userId, isChecked);
         return Result.ok(null);
@@ -149,7 +150,7 @@ public class CartApiController {
     @PostMapping("batchCheckCart/{isChecked}")
     public Result batchCheckCart(@RequestBody List<Long> skuIdList, @PathVariable(value = "isChecked") Integer isChecked, HttpServletRequest request){
         // 如何获取userId
-        Long userId = AuthContextHolder.getUserId();
+        Long userId = AuthContextHolder.getUserIdThreadLocal();
         cartInfoService.batchCheckCart(skuIdList, userId, isChecked);
         return Result.ok(null);
     }

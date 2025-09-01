@@ -1,6 +1,7 @@
 package com.atnjupt.sqyxgo.activity.service;
 
 import com.atnjupt.sqyxgo.model.activity.CouponInfo;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
 import com.atnjupt.sqyxgo.vo.activity.CouponRuleVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,4 +31,12 @@ public interface CouponInfoService extends IService<CouponInfo> {
     List<CouponInfo> findCouponByKeyword(String keyword);
     //获取优惠券信息
     List<CouponInfo> findCouponInfo(Long skuId, Long userId);
+    //获取购物车中对应得优惠卷
+    CouponInfo findRangeSkuIdList(List<CartInfo> cartInfoList, Long couponId);
+    /**
+     * 更新优惠卷得使用状态
+     */
+    boolean updateCouponUserStatus(Long couponId, Long userId, Long orderId);
+    //2 获取购物车可以使用得优惠卷列表，一次只能使用一张优惠卷
+    List<CouponInfo> findCartCouponInfoList(List<CartInfo> cartInfoList, Long userId);
 }

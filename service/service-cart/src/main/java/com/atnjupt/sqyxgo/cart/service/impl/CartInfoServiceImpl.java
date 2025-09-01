@@ -1,15 +1,14 @@
-package com.atguigu.ssyx.cart.service.impl;
+package com.atnjupt.sqyxgo.cart.service.impl;
 
-import com.atguigu.ssyx.cart.service.CartInfoService;
-import com.atguigu.ssyx.client.product.ProductFeignClient;
-import com.atguigu.ssyx.common.constant.RedisConst;
-import com.atguigu.ssyx.common.exception.SsyxException;
-import com.atguigu.ssyx.common.result.ResultCodeEnum;
-import com.atguigu.ssyx.enums.SkuType;
-import com.atguigu.ssyx.model.order.CartInfo;
-import com.atguigu.ssyx.model.product.SkuInfo;
-import com.atguigu.ssyx.vo.order.CartInfoVo;
-import com.google.common.collect.Lists;
+import com.atnjupt.sqyxgo.cart.service.CartInfoService;
+import com.atnjupt.sqyxgo.client.product.ProductFeignClient;
+import com.atnjupt.sqyxgo.common.constant.RedisConst;
+import com.atnjupt.sqyxgo.common.exception.SqyxgoException;
+import com.atnjupt.sqyxgo.common.result.ResultCodeEnum;
+import com.atnjupt.sqyxgo.enums.SkuType;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
+import com.atnjupt.sqyxgo.model.product.SkuInfo;
+import com.atnjupt.sqyxgo.vo.order.CartInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.BoundHashOperations;
@@ -17,7 +16,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +57,7 @@ public class CartInfoServiceImpl implements CartInfoService {
             cartInfo.setCurrentBuyNum(currentSkuNum);
             Integer perLimit = cartInfo.getPerLimit();
             if(currentSkuNum>perLimit){
-                throw new SsyxException(ResultCodeEnum.SKU_LIMIT_ERROR);
+                throw new SqyxgoException(ResultCodeEnum.SKU_LIMIT_ERROR);
             }
             cartInfo.setIsChecked(1);
             cartInfo.setUpdateTime(new Date());
@@ -70,7 +68,7 @@ public class CartInfoServiceImpl implements CartInfoService {
             //远程调用获取值
             SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
             if(skuInfo == null){
-                throw  new SsyxException(ResultCodeEnum.DATA_ERROR);
+                throw  new SqyxgoException(ResultCodeEnum.DATA_ERROR);
             }
             cartInfo.setSkuId(skuId);
             cartInfo.setCategoryId(skuInfo.getCategoryId());

@@ -22,4 +22,8 @@ public interface UserService extends IService<User> {
     LeaderAddressVo getLeaderAddressVoByUserId(Long userId);
     //7 获取当前登录用户信息封装到UserLoginVo，放到Redis里面，设置有效时间
     UserLoginVo getUserLoginVo(Long id);
+    /**
+     * 根据用户id获取用户的收货信息
+     */
+    LeaderAddressVo getLeaderAddressByUserId(Long userId);
 }

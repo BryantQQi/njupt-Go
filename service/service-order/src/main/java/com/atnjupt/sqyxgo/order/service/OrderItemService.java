@@ -1,7 +1,7 @@
-package com.atguigu.ssyx.order.service;
+package com.atnjupt.sqyxgo.order.service;
 
 
-import com.atguigu.ssyx.model.order.OrderItem;
+import com.atnjupt.sqyxgo.model.order.OrderItem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

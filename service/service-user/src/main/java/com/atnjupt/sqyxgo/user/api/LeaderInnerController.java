@@ -1,6 +1,7 @@
 package com.atnjupt.sqyxgo.user.api;
 
 import com.atnjupt.sqyxgo.user.Service.LeaderService;
+import com.atnjupt.sqyxgo.user.Service.UserService;
 import com.atnjupt.sqyxgo.vo.user.LeaderAddressVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LeaderInnerController {
 
     private final LeaderService leaderService;
-
+    private final UserService userService;
 
 
     //通过userId获得当前登录用户的提货点地址信息
@@ -34,6 +35,14 @@ public class LeaderInnerController {
     @GetMapping("inner/getLeaderAddressVoByUserId/{userId}")
     public LeaderAddressVo getLeaderAddressVoByUserId(@PathVariable(value = "userId") Long userId){
         LeaderAddressVo leaderAddressVo = leaderService.getLeaderAddressVoByUserId(userId);
+        return leaderAddressVo;
+    }
+    /**
+     * 根据用户id获取用户的收货信息
+     */
+    @GetMapping("/inner/getUserAddressByUserId/{userId}")
+    public LeaderAddressVo getUserAddressByUserId(@PathVariable Long userId){
+        LeaderAddressVo leaderAddressVo = userService.getLeaderAddressByUserId(userId);
         return leaderAddressVo;
     }
 

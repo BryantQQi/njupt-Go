@@ -1,4 +1,4 @@
-package com.atguigu.ssyx.payment.utils;
+package com.atnjupt.sqyxgo.payment.utils;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;

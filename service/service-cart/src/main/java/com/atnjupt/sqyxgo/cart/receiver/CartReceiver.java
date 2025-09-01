@@ -1,7 +1,7 @@
-package com.atguigu.ssyx.cart.receiver;
+package com.atnjupt.sqyxgo.cart.receiver;
 
-import com.atguigu.ssyx.cart.service.CartInfoService;
-import com.atguigu.ssyx.mq.constant.MqConst;
+import com.atnjupt.sqyxgo.cart.service.CartInfoService;
+import com.atnjupt.sqyxgo.mq.constant.MQConst;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
@@ -27,9 +27,9 @@ import java.io.IOException;
 public class CartReceiver {
     private final CartInfoService cartInfoService;
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = MqConst.QUEUE_DELETE_CART,durable = "true"),
-            exchange = @Exchange(value = MqConst.EXCHANGE_ORDER_DIRECT),
-            key = {MqConst.ROUTING_DELETE_CART}
+            value = @Queue(value = MQConst.QUEUE_DELETE_CART,durable = "true"),
+            exchange = @Exchange(value = MQConst.EXCHANGE_ORDER_DIRECT),
+            key = {MQConst.ROUTING_DELETE_CART}
     ))
     public void deleteCart(Long userId, Message message , Channel channel) throws IOException {
         if (userId != null) {

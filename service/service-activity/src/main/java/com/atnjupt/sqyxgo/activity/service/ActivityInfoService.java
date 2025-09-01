@@ -2,8 +2,11 @@ package com.atnjupt.sqyxgo.activity.service;
 
 import com.atnjupt.sqyxgo.model.activity.ActivityInfo;
 import com.atnjupt.sqyxgo.model.activity.ActivityRule;
+import com.atnjupt.sqyxgo.model.order.CartInfo;
 import com.atnjupt.sqyxgo.model.product.SkuInfo;
 import com.atnjupt.sqyxgo.vo.activity.ActivityRuleVo;
+import com.atnjupt.sqyxgo.vo.order.CartInfoVo;
+import com.atnjupt.sqyxgo.vo.order.OrderConfirmVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -34,4 +37,8 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
     Map<Long, List<String>> findActivity(List<Long> skuIdList);
     //sku对应的促销与优惠券信息
     Map<String, Object> findActivityAndCoupon(Long skuId, Long userId);
+    //获取购物车规则数据
+    List<CartInfoVo> findCartActivityList(List<CartInfo> cartInfoList);
+    //获取购物车满足条件的促销与优惠券信息
+    OrderConfirmVo findCartActivityAndCoupon(List<CartInfo> cartInfoList, Long userId);
 }

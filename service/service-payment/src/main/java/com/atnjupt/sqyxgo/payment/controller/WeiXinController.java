@@ -1,10 +1,10 @@
-package com.atguigu.ssyx.payment.controller;
+package com.atnjupt.sqyxgo.payment.controller;
 
-import com.atguigu.ssyx.common.result.Result;
-import com.atguigu.ssyx.common.result.ResultCodeEnum;
-import com.atguigu.ssyx.enums.PaymentType;
-import com.atguigu.ssyx.payment.service.PaymentInfoService;
-import com.atguigu.ssyx.payment.service.WeiXinService;
+import com.atnjupt.sqyxgo.common.result.Result;
+import com.atnjupt.sqyxgo.common.result.ResultCodeEnum;
+import com.atnjupt.sqyxgo.enums.PaymentType;
+import com.atnjupt.sqyxgo.payment.service.PaymentInfoService;
+import com.atnjupt.sqyxgo.payment.service.WeiXinService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
