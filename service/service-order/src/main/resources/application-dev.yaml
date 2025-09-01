@@ -19,8 +19,9 @@ spring:
   rabbitmq:
     host: 121.4.64.60
     port: 5672
-    username: guest
+    username: ssyx
     password: wmq123456
+    virtual-host: /ssyx
   redis:
     host: 121.4.64.60
     port: 6379

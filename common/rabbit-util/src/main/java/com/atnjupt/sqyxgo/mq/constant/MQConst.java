@@ -60,6 +60,14 @@ public class MQConst {
     //延迟取消订单队列
     public static final String QUEUE_CANCEL_ORDER  = "ssyx.cancel.order";
 
+    // 订单超时关单 - 死信队列
+    public static final String EXCHANGE_ORDER_TIMEOUT_DIRECT = "ssyx.order.timeout.direct";
+    public static final String EXCHANGE_ORDER_TIMEOUT_DLX = "ssyx.order.timeout.dlx";
+    public static final String ROUTING_ORDER_CREATE = "ssyx.order.create";
+    public static final String ROUTING_ORDER_TIMEOUT = "ssyx.order.timeout";
+    public static final String QUEUE_ORDER_TIMEOUT_DELAY = "ssyx.order.timeout.delay.v2";
+    public static final String QUEUE_ORDER_TIMEOUT_DLX = "ssyx.order.timeout.dlx.v2";
+
     /**
      * 定时任务
      */
